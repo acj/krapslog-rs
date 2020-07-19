@@ -33,7 +33,11 @@ fn main() -> Result<()> {
         _ => 80,
     };
 
-    let sparkline = krapslog::build_sparkline(reader, timestamp_format, terminal_width)?;
+    let timestamps: Vec<i64> = krapslog::scan_for_timestamps(reader, timestamp_format)?;
+    if timestamps.is_empty() {
+        return Err(anyhow!("Found no lines with a matching timestamp"));
+    }
+    let sparkline = krapslog::build_sparkline(&timestamps, terminal_width)?;
     println!("{}", sparkline);
 
     Ok(())

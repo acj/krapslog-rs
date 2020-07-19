@@ -6,16 +6,10 @@ use std::io::prelude::*;
 use crate::timestamp_finder::TimestampFinder;
 
 pub fn build_sparkline(
-    reader: impl BufRead,
-    timestamp_format: &str,
+    timestamps: &[i64],
     length: usize,
 ) -> Result<String, anyhow::Error> {
-    let timestamps: Vec<i64> = scan_for_timestamps(reader, timestamp_format)?;
-    if timestamps.is_empty() {
-        return Err(anyhow!("Found no lines with a matching timestamp"));
-    }
-
-    let line_counts = bin_timestamps(&timestamps, length);
+    let line_counts = bin_timestamps(timestamps, length);
     let (min, max) = (
         *line_counts.iter().min().unwrap() as f64,
         *line_counts.iter().max().unwrap() as f64,
@@ -29,7 +23,7 @@ pub fn build_sparkline(
     Ok(sparkline)
 }
 
-fn scan_for_timestamps(reader: impl BufRead, format: &str) -> Result<Vec<i64>, anyhow::Error> {
+pub fn scan_for_timestamps(reader: impl BufRead, format: &str) -> Result<Vec<i64>, anyhow::Error> {
     let date_finder = TimestampFinder::new(format)?;
     let timestamps = reader
         .lines()
@@ -59,7 +53,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn build_sparkline_() -> Result<(), anyhow::Error> {
+    fn build_sparkline_() {
         let log = "Nov 23 06:26:40 ip-10-1-1-1 haproxy[20128]: 10.1.1.10:57305 [23/Nov/2019:06:26:40.781] public myapp/i-05fa49c0e7db8c328 0/0/0/78/78 206 913/458 - - ---- 9/9/6/0/0 0/0 {bytes=0-0} {||1|bytes 0-0/499704} \"GET \
         /2518cb13a48bdf53b2f936f44e7042a3cc7baa06 HTTP/1.1\"
 Nov 23 06:26:41 ip-10-1-1-1 haproxy[20128]: 10.1.1.11:51819 [23/Nov/2019:06:27:41.780] public myapp/i-059c225b48702964a 0/0/0/80/80 200 802/142190 - - ---- 8/8/5/0/0 0/0 {} {||141752|} \"GET /2043f2eb9e2691edcc0c8084d1ff\
@@ -82,13 +76,12 @@ Nov 23 06:26:49 ip-10-1-1-1 haproxy[20128]: 10.1.1.12:38899 [23/Nov/2019:06:35:4
 e4ff7f1d9d80f HTTP/1.1\"
 ";
         let format = "%d/%b/%Y:%H:%M:%S%.f";
-        let sparkline = build_sparkline(log.as_bytes(), format, 80)?;
+        let timestamps = scan_for_timestamps(log.as_bytes(), format).unwrap();
+        let sparkline = build_sparkline(&timestamps, 80).unwrap();
         assert_eq!(
             sparkline,
             "█▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁"
         );
-
-        return Ok(());
     }
 
     #[test]
