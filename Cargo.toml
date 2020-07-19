@@ -4,6 +4,14 @@ version = "0.1.0"
 authors = ["Adam Jensen <acjensen@gmail.com>"]
 edition = "2018"
 
+[lib]
+name = "krapslog"
+path = "src/lib.rs"
+
+[[bin]]
+name = "krapslog"
+path = "src/bin.rs"
+
 [dependencies]
 anyhow = "1.0"
 atty = "0.2"

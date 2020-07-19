@@ -1,47 +1,11 @@
-extern crate regex;
-extern crate sparkline;
+mod timestamp_finder;
 
 use anyhow::*;
-use chrono::NaiveDateTime;
-use regex::Regex;
 use sparkline::*;
-use std::env;
-use std::fs;
-use std::io::{self, prelude::*, BufReader};
-use terminal_size::{terminal_size, Width};
+use std::io::prelude::*;
+use crate::timestamp_finder::TimestampFinder;
 
-// TODO: CLI args https://crates.io/crates/clap
-// TODO: progress https://crates.io/crates/indicatif
-// TODO: Display time markers
-
-fn main() -> Result<()> {
-    let timestamp_format = "%d/%b/%Y:%H:%M:%S%.f";
-    let input = env::args().nth(1);
-    let reader: Box<dyn BufRead> = match input {
-        None => {
-            if atty::is(atty::Stream::Stdin) {
-                // TODO: formalize usage message
-                println!("usage: krapslog <file.log>");
-                std::process::exit(1);
-            }
-
-            Box::new(BufReader::new(io::stdin()))
-        }
-        Some(filename) => Box::new(BufReader::new(fs::File::open(filename)?)),
-    };
-
-    let terminal_width = match terminal_size() {
-        Some((Width(w), _)) => w as usize,
-        _ => 80,
-    };
-
-    let sparkline = build_sparkline(reader, timestamp_format, terminal_width)?;
-    println!("{}", sparkline);
-
-    Ok(())
-}
-
-fn build_sparkline(
+pub fn build_sparkline(
     reader: impl BufRead,
     timestamp_format: &str,
     length: usize,
@@ -89,45 +53,6 @@ fn bin_timestamps(timestamps: &[i64], length: usize) -> Vec<usize> {
     time_buckets.iter().map(|bucket| bucket.len()).collect()
 }
 
-struct TimestampFinder<'a> {
-    datetime_format: &'a str,
-    regex: Regex,
-}
-
-impl<'a> TimestampFinder<'a> {
-    fn new(datetime_format: &'a str) -> Result<Self, anyhow::Error> {
-        let datetime_regex = Self::strftime_to_regex(datetime_format);
-        let regex = Regex::new(&datetime_regex)?;
-
-        Ok(TimestampFinder {
-            datetime_format,
-            regex,
-        })
-    }
-
-    fn find_timestamp(&self, s: &str) -> Option<i64> {
-        let regex_match = self.regex.captures(s)?.get(0)?;
-        let datetime = NaiveDateTime::parse_from_str(regex_match.as_str(), self.datetime_format).ok()?;
-        Some(datetime.timestamp())
-    }
-
-    fn strftime_to_regex(time_format: &str) -> String {
-        time_format
-            .replace("%Y", r"\d{1,4}")
-            .replace("%C", r"\d{1,2}")
-            .replace("%y", r"\d{1,2")
-            .replace("%m", r"\d{1,2}")
-            .replace("%b", r"[A-Za-z]{3}")
-            .replace("%B", r"[A-Za-z]{3,4,5,6,7,8,9}")
-            .replace("%h", r"[A-Za-z]{3}")
-            .replace("%d", r"\d{1,2}")
-            .replace("%H", r"\d{1,2}")
-            .replace("%M", r"\d{1,2}")
-            .replace("%S", r"\d{1,2}")
-            .replace("%.f", r"\d{1,}")
-        // TODO: Add support for remaining characters. https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html
-    }
-}
 
 #[cfg(test)]
 mod tests {
@@ -164,26 +89,6 @@ e4ff7f1d9d80f HTTP/1.1\"
         );
 
         return Ok(());
-    }
-
-    #[test]
-    fn timestamp_finder() {
-        let format = "%d/%b/%Y:%H:%M:%S%.f";
-        let date_finder = TimestampFinder::new(format).unwrap();
-        let log = "Nov 23 06:26:40 ip-10-1-26-81 haproxy[20128]: 54.242.135.245:57305 [23/Nov/2019:06:26:40.781] public repackager/i-05fa49c0e7db8c328 0/0/0/78/78 206 913/458 - - ---- 9/9/6/0/0 0/0 {1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 akamai.n|bytes=0-0} {||1|bytes 0-0/499704} \"GET /deliveries/2518cb13a48bdf53b2f936f44e7042a3cc7baa06.m3u8/seg-88-v1-a1.ts HTTP/1.1\"";
-        let timestamp = date_finder.find_timestamp(log).unwrap();
-        assert_eq!(timestamp, 1574490400);        
-    }
-
-    #[test]
-    fn timestamp_finder_strftime_to_regex() {
-        let convert_compile_match = |format: &str, match_str: &str| {
-            let format_regex = TimestampFinder::strftime_to_regex(format);
-            let regex = Regex::new(&format_regex).unwrap();
-            assert!(regex.is_match(match_str));
-        };
-
-        convert_compile_match("%d/%b/%Y:%H:%M:%S%.f", "06/Jan/2006:13:04:05.000");
     }
 
     #[test]
