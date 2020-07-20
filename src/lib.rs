@@ -82,7 +82,6 @@ pub fn build_time_markers(
     (format!("{}", header_canvas), format!("{}", footer_canvas))
 }
 
-// TODO: Add test
 fn marker_offsets(count: usize, terminal_width: usize) -> Vec<usize> {
     // Always show a marker at the left edge
     let mut offsets = vec![0];
@@ -170,5 +169,13 @@ Nov 23 14:21:53 ip-10-1-26-81 haproxy[20128]: 54.209.125.72:58030 [23/Nov/2019:1
         let timestamps = vec![1, 2, 3, 4, 5, 6];
         let bins = bin_timestamps(&timestamps, 3);
         assert_eq!(bins, [2, 2, 2]);
+    }
+
+    #[test]
+    fn marker_offsets_() {
+        assert_eq![marker_offsets(2, 2), vec![0, 1]];
+        assert_eq![marker_offsets(2, 5), vec![0, 4]];
+        assert_eq!(marker_offsets(5, 10), vec![0, 2, 4, 6, 9]);
+        assert_eq!(marker_offsets(3, 5), vec![0, 2, 4]);
     }
 }
