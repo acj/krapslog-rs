@@ -81,97 +81,102 @@ impl TimeMarker {
     }
 }
 
-#[test]
-fn timemarker_render_top_single_stem() {
-    let mut canvas = Canvas::new(25, 5);
-    let time_marker = TimeMarker {
-        horizontal_offset: 20,
-        timestamp_location: TimestampLocation::Top,
-        timestamp: 0,
-        vertical_offset: 1,
-    };
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn timemarker_render_top_single_stem() {
+        let mut canvas = Canvas::new(25, 5);
+        let time_marker = TimeMarker {
+            horizontal_offset: 20,
+            timestamp_location: TimestampLocation::Top,
+            timestamp: 0,
+            vertical_offset: 1,
+        };
 
-    time_marker.render(&mut canvas);
+        time_marker.render(&mut canvas);
 
-    let rendered = format!("{}", canvas);
-    assert_eq!(rendered, "                         \n                         \n                         \n  1970-01-01 00:00:00    \n                    |    \n");
-}
+        let rendered = format!("{}", canvas);
+        assert_eq!(rendered, "                         \n                         \n                         \n  1970-01-01 00:00:00    \n                    |    \n");
+    }
 
-#[test]
-fn timemarker_render_bottom_single_stem() {
-    let mut canvas = Canvas::new(25, 5);
-    let time_marker = TimeMarker {
-        horizontal_offset: 0,
-        timestamp_location: TimestampLocation::Bottom,
-        timestamp: 0,
-        vertical_offset: 1,
-    };
+    #[test]
+    fn timemarker_render_bottom_single_stem() {
+        let mut canvas = Canvas::new(25, 5);
+        let time_marker = TimeMarker {
+            horizontal_offset: 0,
+            timestamp_location: TimestampLocation::Bottom,
+            timestamp: 0,
+            vertical_offset: 1,
+        };
 
-    time_marker.render(&mut canvas);
-    let rendered = format!("{}", canvas);
-    assert_eq!(rendered, "|                        \n1970-01-01 00:00:00      \n                         \n                         \n                         \n");
-}
+        time_marker.render(&mut canvas);
+        let rendered = format!("{}", canvas);
+        assert_eq!(rendered, "|                        \n1970-01-01 00:00:00      \n                         \n                         \n                         \n");
+    }
 
-#[test]
-fn timemarker_render_top_three_stems() {
-    let mut canvas = Canvas::new(80, 5);
-    let time_marker = TimeMarker {
-        horizontal_offset: 19,
-        timestamp_location: TimestampLocation::Top,
-        timestamp: 0,
-        vertical_offset: 1,
-    };
-    let time_marker2 = TimeMarker {
-        horizontal_offset: 40,
-        timestamp_location: TimestampLocation::Top,
-        timestamp: 1000,
-        vertical_offset: 2,
-    };
-    let time_marker3 = TimeMarker {
-        horizontal_offset: 60,
-        timestamp_location: TimestampLocation::Top,
-        timestamp: 2000,
-        vertical_offset: 3,
-    };
+    #[test]
+    fn timemarker_render_top_three_stems() {
+        let mut canvas = Canvas::new(80, 5);
+        let time_marker = TimeMarker {
+            horizontal_offset: 19,
+            timestamp_location: TimestampLocation::Top,
+            timestamp: 0,
+            vertical_offset: 1,
+        };
+        let time_marker2 = TimeMarker {
+            horizontal_offset: 40,
+            timestamp_location: TimestampLocation::Top,
+            timestamp: 1000,
+            vertical_offset: 2,
+        };
+        let time_marker3 = TimeMarker {
+            horizontal_offset: 60,
+            timestamp_location: TimestampLocation::Top,
+            timestamp: 2000,
+            vertical_offset: 3,
+        };
 
-    [time_marker, time_marker2, time_marker3]
-        .iter()
-        .for_each(|marker| {
-            marker.render(&mut canvas);
-        });
+        [time_marker, time_marker2, time_marker3]
+            .iter()
+            .for_each(|marker| {
+                marker.render(&mut canvas);
+            });
 
-    let rendered = format!("{}", canvas);
-    assert_eq!(rendered, "                                                                                \n                                          1970-01-01 00:33:20                   \n                      1970-01-01 00:16:40                   |                   \n 1970-01-01 00:00:00                    |                   |                   \n                   |                    |                   |                   \n");
-}
+        let rendered = format!("{}", canvas);
+        assert_eq!(rendered, "                                                                                \n                                          1970-01-01 00:33:20                   \n                      1970-01-01 00:16:40                   |                   \n 1970-01-01 00:00:00                    |                   |                   \n                   |                    |                   |                   \n");
+    }
 
-#[test]
-fn timemarker_render_bottom_three_stems() {
-    let mut canvas = Canvas::new(80, 5);
-    let time_marker = TimeMarker {
-        horizontal_offset: 19,
-        timestamp_location: TimestampLocation::Bottom,
-        timestamp: 0,
-        vertical_offset: 3,
-    };
-    let time_marker2 = TimeMarker {
-        horizontal_offset: 40,
-        timestamp_location: TimestampLocation::Bottom,
-        timestamp: 1000,
-        vertical_offset: 2,
-    };
-    let time_marker3 = TimeMarker {
-        horizontal_offset: 60,
-        timestamp_location: TimestampLocation::Bottom,
-        timestamp: 2000,
-        vertical_offset: 1,
-    };
+    #[test]
+    fn timemarker_render_bottom_three_stems() {
+        let mut canvas = Canvas::new(80, 5);
+        let time_marker = TimeMarker {
+            horizontal_offset: 19,
+            timestamp_location: TimestampLocation::Bottom,
+            timestamp: 0,
+            vertical_offset: 3,
+        };
+        let time_marker2 = TimeMarker {
+            horizontal_offset: 40,
+            timestamp_location: TimestampLocation::Bottom,
+            timestamp: 1000,
+            vertical_offset: 2,
+        };
+        let time_marker3 = TimeMarker {
+            horizontal_offset: 60,
+            timestamp_location: TimestampLocation::Bottom,
+            timestamp: 2000,
+            vertical_offset: 1,
+        };
 
-    [time_marker, time_marker2, time_marker3]
-        .iter()
-        .for_each(|marker| {
-            marker.render(&mut canvas);
-        });
+        [time_marker, time_marker2, time_marker3]
+            .iter()
+            .for_each(|marker| {
+                marker.render(&mut canvas);
+            });
 
-    let rendered = format!("{}", canvas);
-    assert_eq!(rendered, "                   |                    |                   |                   \n                   |                    |                   1970-01-01 00:33:20 \n                   |                    1970-01-01 00:16:40                     \n                   1970-01-01 00:00:00                                          \n                                                                                \n");
+        let rendered = format!("{}", canvas);
+        assert_eq!(rendered, "                   |                    |                   |                   \n                   |                    |                   1970-01-01 00:33:20 \n                   |                    1970-01-01 00:16:40                     \n                   1970-01-01 00:00:00                                          \n                                                                                \n");
+    }
 }
