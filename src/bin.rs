@@ -10,7 +10,6 @@ use terminal_size::{terminal_size, Width};
 
 // TODO: CLI args https://crates.io/crates/clap
 // TODO: progress https://crates.io/crates/indicatif
-// TODO: Display time markers
 
 fn main() -> Result<()> {
     let timestamp_format = "%d/%b/%Y:%H:%M:%S%.f";
@@ -37,8 +36,12 @@ fn main() -> Result<()> {
     if timestamps.is_empty() {
         return Err(anyhow!("Found no lines with a matching timestamp"));
     }
+
     let sparkline = krapslog::build_sparkline(&timestamps, terminal_width)?;
+    let (header, footer) = krapslog::build_time_markers(&timestamps, 5, terminal_width);
+    print!("{}", header);
     println!("{}", sparkline);
+    print!("{}", footer);
 
     Ok(())
 }

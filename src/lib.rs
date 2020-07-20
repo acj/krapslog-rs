@@ -1,14 +1,12 @@
+mod time_marker;
 mod timestamp_finder;
 
+use crate::timestamp_finder::TimestampFinder;
 use anyhow::*;
 use sparkline::*;
 use std::io::prelude::*;
-use crate::timestamp_finder::TimestampFinder;
 
-pub fn build_sparkline(
-    timestamps: &[i64],
-    length: usize,
-) -> Result<String, anyhow::Error> {
+pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyhow::Error> {
     let line_counts = bin_timestamps(timestamps, length);
     let (min, max) = (
         *line_counts.iter().min().unwrap() as f64,
@@ -31,6 +29,76 @@ pub fn scan_for_timestamps(reader: impl BufRead, format: &str) -> Result<Vec<i64
         .filter_map(|line| date_finder.find_timestamp(&line))
         .collect();
     Ok(timestamps)
+}
+
+pub fn build_time_markers(
+    timestamps: &[i64],
+    marker_count: usize,
+    terminal_width: usize,
+) -> (String, String) {
+    let mut footer_marker_count = marker_count / 2;
+    if footer_marker_count % 2 != 0 {
+        footer_marker_count += 1;
+    }
+
+    let marker_timestamp_offsets: Vec<usize> = (0..marker_count)
+        .into_iter()
+        .map(|i| (i as f64 * timestamps.len() as f64 / marker_count as f64).ceil() as usize)
+        .collect();
+    let header_timestamp_offsets = marker_timestamp_offsets[footer_marker_count..].to_vec();
+    let footer_timestamp_offsets = marker_timestamp_offsets[..footer_marker_count].to_vec();
+
+    let marker_terminal_offsets = marker_offsets(marker_count, terminal_width);
+    let header_terminal_offsets = marker_terminal_offsets[footer_marker_count..].to_vec();
+    let footer_terminal_offsets = marker_terminal_offsets[..footer_marker_count].to_vec();
+
+    let mut header_canvas =
+        time_marker::Canvas::new(terminal_width, header_timestamp_offsets.len() + 1);
+    let mut footer_canvas =
+        time_marker::Canvas::new(terminal_width, footer_timestamp_offsets.len() + 1);
+
+    header_timestamp_offsets
+        .iter()
+        .enumerate()
+        .map(|(index, timestamp_index)| time_marker::TimeMarker {
+            horizontal_offset: header_terminal_offsets[index],
+            timestamp: timestamps[*timestamp_index],
+            timestamp_location: time_marker::TimestampLocation::Top,
+            vertical_offset: index + 1,
+        })
+        .for_each(|time_marker| time_marker.render(&mut header_canvas));
+
+    footer_timestamp_offsets
+        .iter()
+        .enumerate()
+        .map(|(index, timestamp_index)| time_marker::TimeMarker {
+            horizontal_offset: footer_terminal_offsets[index],
+            timestamp: timestamps[*timestamp_index],
+            timestamp_location: time_marker::TimestampLocation::Bottom,
+            vertical_offset: footer_timestamp_offsets.len() - index,
+        })
+        .for_each(|time_marker| time_marker.render(&mut footer_canvas));
+
+    (format!("{}", header_canvas), format!("{}", footer_canvas))
+}
+
+// TODO: Add test
+fn marker_offsets(count: usize, terminal_width: usize) -> Vec<usize> {
+    // Always show a marker at the left edge
+    let mut offsets = vec![0];
+
+    // Divide the non-edge offsets into equally-sized segments, placing a marker between them
+    let skip = (terminal_width - 2) as f64 / (count - 1) as f64;
+    let mut current_offset = skip;
+    (0..(count - 2)).into_iter().for_each(|_| {
+        offsets.push(current_offset.ceil() as usize % terminal_width);
+        current_offset += skip;
+    });
+
+    // Always show a marker at the right edge
+    offsets.push(terminal_width - 1);
+
+    offsets
 }
 
 fn bin_timestamps(timestamps: &[i64], length: usize) -> Vec<usize> {
