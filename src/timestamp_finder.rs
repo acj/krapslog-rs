@@ -1,4 +1,3 @@
-
 use chrono::NaiveDateTime;
 use regex::Regex;
 pub struct TimestampFinder<'a> {
@@ -19,7 +18,8 @@ impl<'a> TimestampFinder<'a> {
 
     pub fn find_timestamp(&self, s: &str) -> Option<i64> {
         let regex_match = self.regex.captures(s)?.get(0)?;
-        let datetime = NaiveDateTime::parse_from_str(regex_match.as_str(), self.datetime_format).ok()?;
+        let datetime =
+            NaiveDateTime::parse_from_str(regex_match.as_str(), self.datetime_format).ok()?;
         Some(datetime.timestamp())
     }
 
@@ -47,7 +47,7 @@ fn timestamp_finder() {
     let date_finder = TimestampFinder::new(format).unwrap();
     let log = "Nov 23 06:26:40 ip-10-1-26-81 haproxy[20128]: 54.242.135.245:57305 [23/Nov/2019:06:26:40.781] public repackager/i-05fa49c0e7db8c328 0/0/0/78/78 206 913/458 - - ---- 9/9/6/0/0 0/0 {1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 akamai.n|bytes=0-0} {||1|bytes 0-0/499704} \"GET /deliveries/2518cb13a48bdf53b2f936f44e7042a3cc7baa06.m3u8/seg-88-v1-a1.ts HTTP/1.1\"";
     let timestamp = date_finder.find_timestamp(log).unwrap();
-    assert_eq!(timestamp, 1574490400);        
+    assert_eq!(timestamp, 1574490400);
 }
 
 #[test]

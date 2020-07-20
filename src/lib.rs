@@ -115,7 +115,6 @@ fn bin_timestamps(timestamps: &[i64], length: usize) -> Vec<usize> {
     time_buckets.iter().map(|bucket| bucket.len()).collect()
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
