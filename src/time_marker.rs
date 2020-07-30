@@ -30,9 +30,9 @@ impl Canvas {
 
 impl fmt::Display for Canvas {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        self.buffer.iter().for_each(|line| {
-            writeln!(f, "{}", line).expect("Couldn't format canvas");
-        });
+        for line in self.buffer.iter() {
+            writeln!(f, "{}", line)?;
+        }
         Ok(())
     }
 }
