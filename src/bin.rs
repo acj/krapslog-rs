@@ -1,25 +1,41 @@
+extern crate clap;
 extern crate krapslog;
 extern crate regex;
 extern crate sparkline;
 
 use anyhow::*;
-use std::env;
+use clap::{App, Arg};
 use std::fs;
 use std::io::{self, prelude::*, BufReader};
 use terminal_size::{terminal_size, Width};
 
-// TODO: CLI args https://crates.io/crates/clap
 // TODO: progress https://crates.io/crates/indicatif
 
 fn main() -> Result<()> {
+    let app = App::new("krapslog")
+        .about("Visualize log files using sparklines")
+        .arg(
+            Arg::with_name("FILTER")
+                .short("f")
+                .long("filter")
+                .value_name("filter")
+                .help("Only consider lines that contain this value")
+                .required(false)
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("FILE")
+                .help("Log file to analyze")
+                .required(false)
+                .index(1),
+        );
+    let arg_matches = app.get_matches();
+
     let timestamp_format = "%d/%b/%Y:%H:%M:%S%.f";
-    let input = env::args().nth(1);
-    let reader: Box<dyn BufRead> = match input {
+    let reader: Box<dyn BufRead> = match arg_matches.value_of("FILE") {
         None => {
             if atty::is(atty::Stream::Stdin) {
-                // TODO: formalize usage message
-                println!("usage: krapslog <file.log>");
-                std::process::exit(1);
+                eprintln!("Reading from standard input. Paste your log and then send EOF (e.g. by pressing ctrl-D).");
             }
 
             Box::new(BufReader::new(io::stdin()))
@@ -33,7 +49,7 @@ fn main() -> Result<()> {
     };
 
     let timestamps: Vec<i64> =
-        krapslog::scan_for_timestamps(reader, timestamp_format, None)?;
+        krapslog::scan_for_timestamps(reader, timestamp_format, arg_matches.value_of("FILTER"))?;
     if timestamps.is_empty() {
         return Err(anyhow!("Found no lines with a matching timestamp"));
     }

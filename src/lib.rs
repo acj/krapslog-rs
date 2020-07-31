@@ -183,10 +183,13 @@ Nov 23 14:21:53 ip-10-1-26-81 haproxy[20128]: 54.209.125.72:58030 [23/Nov/2019:1
         let timestamps = scan_for_timestamps(log.as_bytes(), format, Some("repackager")).unwrap();
         assert_eq!(timestamps, [1574490400, 1574518913]);
 
-        let timestamps = scan_for_timestamps(log.as_bytes(), format, Some("i-05fa49c0e7db8c328")).unwrap();
+        let timestamps =
+            scan_for_timestamps(log.as_bytes(), format, Some("i-05fa49c0e7db8c328")).unwrap();
         assert_eq!(timestamps, [1574490400]);
 
-        let timestamps = scan_for_timestamps(log.as_bytes(), format, Some("nonexistent_widget_modulator")).unwrap();
+        let timestamps =
+            scan_for_timestamps(log.as_bytes(), format, Some("nonexistent_widget_modulator"))
+                .unwrap();
         assert_eq!(timestamps, []);
     }
 
