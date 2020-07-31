@@ -28,6 +28,16 @@ fn main() -> Result<()> {
                 .help("Log file to analyze")
                 .required(false)
                 .index(1),
+        )
+        .arg(
+            Arg::with_name("MARKERS")
+                .short("m")
+                .long("markers")
+                .value_name("markers")
+                .help("Number of time markers to display")
+                .takes_value(true)
+                .required(false)
+                .default_value("0")
         );
     let arg_matches = app.get_matches();
 
@@ -54,8 +64,9 @@ fn main() -> Result<()> {
         return Err(anyhow!("Found no lines with a matching timestamp"));
     }
 
+    let num_markers = clap::value_t!(arg_matches.value_of("MARKERS"), usize)?;
+    let (header, footer) = krapslog::build_time_markers(&timestamps, num_markers, terminal_width);
     let sparkline = krapslog::build_sparkline(&timestamps, terminal_width)?;
-    let (header, footer) = krapslog::build_time_markers(&timestamps, 5, terminal_width);
     print!("{}", header);
     println!("{}", sparkline);
     print!("{}", footer);
