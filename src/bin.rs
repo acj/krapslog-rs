@@ -32,7 +32,8 @@ fn main() -> Result<()> {
         _ => 80,
     };
 
-    let timestamps: Vec<i64> = krapslog::scan_for_timestamps(reader, timestamp_format)?;
+    let timestamps: Vec<i64> =
+        krapslog::scan_for_timestamps(reader, timestamp_format, None)?;
     if timestamps.is_empty() {
         return Err(anyhow!("Found no lines with a matching timestamp"));
     }
