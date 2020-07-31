@@ -84,7 +84,7 @@ impl TimeMarker {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn timemarker_render_top_single_stem() {
         let mut canvas = Canvas::new(25, 5);
