@@ -1,15 +1,16 @@
 extern crate clap;
 extern crate krapslog;
+extern crate progress_streams;
 extern crate regex;
 extern crate sparkline;
 
 use anyhow::*;
 use clap::{App, Arg};
+use indicatif::ProgressBar;
+use progress_streams::ProgressReader;
 use std::fs;
 use std::io::{self, prelude::*, BufReader};
 use terminal_size::{terminal_size, Width};
-
-// TODO: progress https://crates.io/crates/indicatif
 
 fn main() -> Result<()> {
     let app = App::new("krapslog")
@@ -38,10 +39,22 @@ fn main() -> Result<()> {
                 .takes_value(true)
                 .required(false)
                 .default_value("0"),
+        )
+        .arg(
+            Arg::with_name("PROGRESS")
+                .short("p")
+                .long("progress")
+                .value_name("progress")
+                .help("Display progress while working. Requires a file.")
+                .required(false)
+                .takes_value(false),
         );
     let arg_matches = app.get_matches();
 
     let timestamp_format = "%d/%b/%Y:%H:%M:%S%.f";
+    let pb = ProgressBar::new(0);
+    pb.set_draw_delta(10_000_000);
+
     let reader: Box<dyn BufRead> = match arg_matches.value_of("FILE") {
         None => {
             if atty::is(atty::Stream::Stdin) {
@@ -50,7 +63,20 @@ fn main() -> Result<()> {
 
             Box::new(BufReader::new(io::stdin()))
         }
-        Some(filename) => Box::new(BufReader::new(fs::File::open(filename)?)),
+        Some(filename) => {
+            let mut reader: Box<dyn BufRead> = Box::new(BufReader::new(fs::File::open(filename)?));
+
+            if arg_matches.is_present("PROGRESS") {
+                let file_metadata = fs::metadata(filename)?;
+                pb.set_length(file_metadata.len());
+
+                reader = Box::new(BufReader::new(ProgressReader::new(reader, |bytes_read| {
+                    pb.inc(bytes_read as u64);
+                })));
+            }
+
+            reader
+        }
     };
 
     let terminal_width = match terminal_size() {
@@ -63,6 +89,8 @@ fn main() -> Result<()> {
     if timestamps.is_empty() {
         return Err(anyhow!("Found no lines with a matching timestamp"));
     }
+
+    pb.finish_and_clear();
 
     let num_markers = clap::value_t!(arg_matches.value_of("MARKERS"), usize)?;
     let (header, footer) = krapslog::build_time_markers(&timestamps, num_markers, terminal_width);
