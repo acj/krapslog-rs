@@ -53,7 +53,7 @@ pub fn build_time_markers(
     if marker_count == 0 {
         return (String::from(""), String::from(""));
     }
-    
+
     let mut footer_marker_count = marker_count / 2;
     if footer_marker_count % 2 != 0 {
         footer_marker_count += 1;

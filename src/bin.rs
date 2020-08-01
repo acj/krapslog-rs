@@ -37,7 +37,7 @@ fn main() -> Result<()> {
                 .help("Number of time markers to display")
                 .takes_value(true)
                 .required(false)
-                .default_value("0")
+                .default_value("0"),
         );
     let arg_matches = app.get_matches();
 
