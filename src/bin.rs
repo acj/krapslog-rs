@@ -12,8 +12,11 @@ use std::fs;
 use std::io::{self, prelude::*, BufReader};
 use terminal_size::{terminal_size, Width};
 
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
 fn main() -> Result<()> {
     let app = App::new("krapslog")
+        .version(VERSION)
         .about("Visualize log files using sparklines")
         .arg(
             Arg::with_name("FILTER")
