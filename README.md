@@ -1,5 +1,8 @@
 # krapslog
 
+[![Actions Status](https://github.com/acj/krapslog-rs/workflows/CI/badge.svg)](https://github.com/acj/krapslog-rs/actions)
+[![Crates.io](https://img.shields.io/crates/v/krapslog.svg)](https://crates.io/crates/krapslog)
+
 Visualize a log file with [sparklines](https://en.wikipedia.org/wiki/Sparkline)
 
 When troubleshooting a problem with a production service, I often need to get the general shape of a log file. Are there any spikes? Was the load higher during the incident than it was beforehand? Does anything else stand out? Without tooling to help you, a large log file is little more than a blob of data. This tool is designed to quickly surface key features of the log — and then get out of your way.
