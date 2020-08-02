@@ -135,7 +135,7 @@ dependencies = [
 
 [[package]]
 name = "krapslog"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow 1.0.31 (registry+https://github.com/rust-lang/crates.io-index)",
  "atty 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
