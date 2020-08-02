@@ -3,6 +3,12 @@ name = "krapslog"
 version = "0.1.0"
 authors = ["Adam Jensen <acjensen@gmail.com>"]
 edition = "2018"
+license-file = "LICENSE"
+repository = "https://github.com/acj/krapslog-rs"
+description = "Visualize log files using sparklines"
+readme = "README.md"
+keywords = ["sparklines", "logs", "dataviz", "debugging"]
+categories = ["command-line-utilities", "parser-implementations", "visualization"]
 
 [lib]
 name = "krapslog"
