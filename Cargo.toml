@@ -9,6 +9,9 @@ description = "Visualize log files using sparklines"
 readme = "README.md"
 keywords = ["sparklines", "logs", "dataviz", "debugging"]
 categories = ["command-line-utilities", "parser-implementations", "visualization"]
+exclude = [
+    ".github/*",
+]
 
 [lib]
 name = "krapslog"
