@@ -12,7 +12,7 @@ use std::fs;
 use std::io::{self, prelude::*, BufReader};
 use terminal_size::{terminal_size, Width};
 
-const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() -> Result<()> {
     let app = App::new("krapslog")

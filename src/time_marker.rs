@@ -14,10 +14,7 @@ pub struct Canvas {
 impl Canvas {
     pub fn new(width: usize, height: usize) -> Canvas {
         let buffer = vec![String::from(" ").repeat(width); height];
-        Canvas {
-            buffer: buffer,
-            height: height,
-        }
+        Canvas { buffer, height }
     }
 
     fn update_row<F>(&mut self, offset: usize, f: F)
@@ -62,7 +59,7 @@ impl TimeMarker {
             ),
         };
 
-        stem_rows.into_iter().for_each(|i| {
+        stem_rows.for_each(|i| {
             canvas.update_row(i, |row| {
                 let mut s = row.to_owned();
                 s.replace_range(self.horizontal_offset..(self.horizontal_offset + 1), "|");

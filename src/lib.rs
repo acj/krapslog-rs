@@ -60,7 +60,6 @@ pub fn build_time_markers(
     }
 
     let marker_timestamp_offsets: Vec<usize> = (0..marker_count)
-        .into_iter()
         .map(|i| (i as f64 * timestamps.len() as f64 / marker_count as f64).ceil() as usize)
         .collect();
     let header_timestamp_offsets = marker_timestamp_offsets[footer_marker_count..].to_vec();
@@ -107,7 +106,7 @@ fn marker_offsets(count: usize, terminal_width: usize) -> Vec<usize> {
     // Divide the non-edge offsets into equally-sized segments, placing a marker between them
     let skip = (terminal_width - 2) as f64 / (count - 1) as f64;
     let mut current_offset = skip;
-    (0..(count - 2)).into_iter().for_each(|_| {
+    (0..(count - 2)).for_each(|_| {
         offsets.push(current_offset.ceil() as usize % terminal_width);
         current_offset += skip;
     });
