@@ -6,7 +6,7 @@ extern crate sparkline;
 
 use anyhow::*;
 use clap::{App, Arg};
-use indicatif::ProgressBar;
+use indicatif::{ProgressBar, ProgressStyle};
 use progress_streams::ProgressReader;
 use std::fs;
 use std::io::{self, prelude::*, BufReader};
@@ -63,6 +63,9 @@ fn main() -> Result<()> {
     let timestamp_format = arg_matches.value_of("FORMAT").unwrap();
     let pb = ProgressBar::new(0);
     pb.set_draw_delta(10_000_000);
+    pb.set_style(
+        ProgressStyle::default_bar().template("[{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})"),
+    );
 
     let reader: Box<dyn BufRead> = match arg_matches.value_of("FILE") {
         None => {
