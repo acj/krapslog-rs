@@ -19,7 +19,6 @@ fn main() -> Result<()> {
             Arg::with_name("FILTER")
                 .short("f")
                 .long("filter")
-                .value_name("filter")
                 .help("Only consider lines that contain this value")
                 .required(false)
                 .takes_value(true),
@@ -34,7 +33,6 @@ fn main() -> Result<()> {
             Arg::with_name("MARKERS")
                 .short("m")
                 .long("markers")
-                .value_name("markers")
                 .help("Number of time markers to display")
                 .takes_value(true)
                 .required(false)
@@ -44,7 +42,6 @@ fn main() -> Result<()> {
             Arg::with_name("PROGRESS")
                 .short("p")
                 .long("progress")
-                .value_name("progress")
                 .help("Display progress while working. Requires a file.")
                 .required(false)
                 .takes_value(false),
