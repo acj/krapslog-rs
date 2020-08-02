@@ -4,7 +4,7 @@ mod timestamp_finder;
 use crate::timestamp_finder::TimestampFinder;
 use anyhow::*;
 use sparkline::*;
-use std::io::prelude::*;
+use std::io::{prelude::*, BufReader};
 
 pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyhow::Error> {
     let line_counts = bin_timestamps(timestamps, length);
@@ -21,13 +21,16 @@ pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyh
     Ok(sparkline)
 }
 
-pub fn scan_for_timestamps(
-    reader: impl BufRead,
+pub fn scan_for_timestamps<R>(
+    reader: R,
     format: &str,
     filter: Option<&str>,
-) -> Result<Vec<i64>, anyhow::Error> {
+) -> Result<Vec<i64>, anyhow::Error>
+where
+    R: Read,
+{
     let date_finder = TimestampFinder::new(format)?;
-    let timestamps = reader
+    let timestamps = BufReader::new(reader)
         .lines()
         .filter_map(Result::ok)
         .filter_map(|line| match filter {

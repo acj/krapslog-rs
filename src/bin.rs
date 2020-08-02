@@ -9,7 +9,7 @@ use clap::{App, Arg};
 use indicatif::{ProgressBar, ProgressStyle};
 use progress_streams::ProgressReader;
 use std::fs;
-use std::io::{self, prelude::*, BufReader};
+use std::io::{self, prelude::*};
 use terminal_size::{terminal_size, Width};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -67,27 +67,27 @@ fn main() -> Result<()> {
         ProgressStyle::default_bar().template("[{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})"),
     );
 
-    let reader: Box<dyn BufRead> = match arg_matches.value_of("FILE") {
+    let reader: Box<dyn Read> = match arg_matches.value_of("FILE") {
         None => {
             if atty::is(atty::Stream::Stdin) {
                 eprintln!("Reading from standard input. Paste your log and then send EOF (e.g. by pressing ctrl-D).");
             }
 
-            Box::new(BufReader::new(io::stdin()))
+            Box::new(io::stdin())
         }
         Some(filename) => {
-            let mut reader: Box<dyn BufRead> = Box::new(BufReader::new(fs::File::open(filename)?));
+            let file = fs::File::open(filename)?;
 
             if arg_matches.is_present("PROGRESS") {
                 let file_metadata = fs::metadata(filename)?;
                 pb.set_length(file_metadata.len());
 
-                reader = Box::new(BufReader::new(ProgressReader::new(reader, |bytes_read| {
+                Box::new(ProgressReader::new(file, |bytes_read| {
                     pb.inc(bytes_read as u64);
-                })));
+                }))
+            } else {
+                Box::new(file)
             }
-
-            reader
         }
     };
 
