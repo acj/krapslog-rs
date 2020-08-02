@@ -33,6 +33,15 @@ fn main() -> Result<()> {
                 .index(1),
         )
         .arg(
+            Arg::with_name("FORMAT")
+                .short("F")
+                .long("format")
+                .help("Timestamp format to match")
+                .takes_value(true)
+                .required(false)
+                .default_value("%d/%b/%Y:%H:%M:%S%.f"),
+        )
+        .arg(
             Arg::with_name("MARKERS")
                 .short("m")
                 .long("markers")
@@ -51,7 +60,7 @@ fn main() -> Result<()> {
         );
     let arg_matches = app.get_matches();
 
-    let timestamp_format = "%d/%b/%Y:%H:%M:%S%.f";
+    let timestamp_format = arg_matches.value_of("FORMAT").unwrap();
     let pb = ProgressBar::new(0);
     pb.set_draw_delta(10_000_000);
 
