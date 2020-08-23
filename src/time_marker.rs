@@ -94,8 +94,14 @@ mod tests {
 
         time_marker.render(&mut canvas);
 
-        let rendered = format!("{}", canvas);
-        assert_eq!(rendered, "                         \n                         \n                         \n  1970-01-01 00:00:00    \n                    |    \n");
+        let rendered = format!("\n{}", canvas);
+        assert_eq!(rendered, "
+                         
+                         
+                         
+  1970-01-01 00:00:00    
+                    |    
+");
     }
 
     #[test]
@@ -109,8 +115,14 @@ mod tests {
         };
 
         time_marker.render(&mut canvas);
-        let rendered = format!("{}", canvas);
-        assert_eq!(rendered, "|                        \n1970-01-01 00:00:00      \n                         \n                         \n                         \n");
+        let rendered = format!("\n{}", canvas);
+        assert_eq!(rendered, "
+|                        
+1970-01-01 00:00:00      
+                         
+                         
+                         
+");
     }
 
     #[test]
@@ -141,8 +153,14 @@ mod tests {
                 marker.render(&mut canvas);
             });
 
-        let rendered = format!("{}", canvas);
-        assert_eq!(rendered, "                                                                                \n                                          1970-01-01 00:33:20                   \n                      1970-01-01 00:16:40                   |                   \n 1970-01-01 00:00:00                    |                   |                   \n                   |                    |                   |                   \n");
+        let rendered = format!("\n{}", canvas);
+        assert_eq!(rendered, "
+                                                                                
+                                          1970-01-01 00:33:20                   
+                      1970-01-01 00:16:40                   |                   
+ 1970-01-01 00:00:00                    |                   |                   
+                   |                    |                   |                   
+");
     }
 
     #[test]
@@ -173,7 +191,13 @@ mod tests {
                 marker.render(&mut canvas);
             });
 
-        let rendered = format!("{}", canvas);
-        assert_eq!(rendered, "                   |                    |                   |                   \n                   |                    |                   1970-01-01 00:33:20 \n                   |                    1970-01-01 00:16:40                     \n                   1970-01-01 00:00:00                                          \n                                                                                \n");
+        let rendered = format!("\n{}", canvas);
+        assert_eq!(rendered, "
+                   |                    |                   |                   
+                   |                    |                   1970-01-01 00:33:20 
+                   |                    1970-01-01 00:16:40                     
+                   1970-01-01 00:00:00                                          
+                                                                                
+");
     }
 }
