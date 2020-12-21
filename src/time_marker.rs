@@ -95,13 +95,16 @@ mod tests {
         time_marker.render(&mut canvas);
 
         let rendered = format!("\n{}", canvas);
-        assert_eq!(rendered, "
+        assert_eq!(
+            rendered,
+            "
                          
                          
                          
   1970-01-01 00:00:00    
                     |    
-");
+"
+        );
     }
 
     #[test]
@@ -116,13 +119,16 @@ mod tests {
 
         time_marker.render(&mut canvas);
         let rendered = format!("\n{}", canvas);
-        assert_eq!(rendered, "
+        assert_eq!(
+            rendered,
+            "
 |                        
 1970-01-01 00:00:00      
                          
                          
                          
-");
+"
+        );
     }
 
     #[test]
@@ -154,13 +160,16 @@ mod tests {
             });
 
         let rendered = format!("\n{}", canvas);
-        assert_eq!(rendered, "
+        assert_eq!(
+            rendered,
+            "
                                                                                 
                                           1970-01-01 00:33:20                   
                       1970-01-01 00:16:40                   |                   
  1970-01-01 00:00:00                    |                   |                   
                    |                    |                   |                   
-");
+"
+        );
     }
 
     #[test]
@@ -192,12 +201,15 @@ mod tests {
             });
 
         let rendered = format!("\n{}", canvas);
-        assert_eq!(rendered, "
+        assert_eq!(
+            rendered,
+            "
                    |                    |                   |                   
                    |                    |                   1970-01-01 00:33:20 
                    |                    1970-01-01 00:16:40                     
                    1970-01-01 00:00:00                                          
                                                                                 
-");
+"
+        );
     }
 }
