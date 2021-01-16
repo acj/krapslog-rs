@@ -125,13 +125,13 @@ fn timestamp_frequency_distribution(timestamps: &[i64], bucket_count: usize) -> 
     let last_timestamp = timestamps.iter().max().unwrap();
     let duration_seconds = last_timestamp - first_timestamp;
     let seconds_per_bucket = (duration_seconds as f64 / bucket_count as f64).ceil();
-    let mut time_buckets = vec![Vec::<i64>::new(); bucket_count];
+    let mut timestamps_per_bucket = vec![0; bucket_count];
     for timestamp in timestamps {
         let bucket_index = ((timestamp - first_timestamp) as f64 / seconds_per_bucket) as usize;
-        time_buckets[bucket_index].push(*timestamp);
+        timestamps_per_bucket[bucket_index] += 1;
     }
 
-    time_buckets.iter().map(|bucket| bucket.len()).collect()
+    timestamps_per_bucket
 }
 
 #[cfg(test)]
