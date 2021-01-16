@@ -120,12 +120,12 @@ fn marker_offsets(count: usize, terminal_width: usize) -> Vec<usize> {
     offsets
 }
 
-fn bin_timestamps(timestamps: &[i64], length: usize) -> Vec<usize> {
+fn bin_timestamps(timestamps: &[i64], bucket_count: usize) -> Vec<usize> {
     let first_timestamp = timestamps.iter().min().unwrap();
     let last_timestamp = timestamps.iter().max().unwrap();
     let duration_seconds = last_timestamp - first_timestamp;
-    let seconds_per_bucket = (duration_seconds as f64 / length as f64).ceil();
-    let mut time_buckets = vec![Vec::<i64>::new(); length];
+    let seconds_per_bucket = (duration_seconds as f64 / bucket_count as f64).ceil();
+    let mut time_buckets = vec![Vec::<i64>::new(); bucket_count];
     for timestamp in timestamps {
         let bucket_index = ((timestamp - first_timestamp) as f64 / seconds_per_bucket) as usize;
         time_buckets[bucket_index].push(*timestamp);
