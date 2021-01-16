@@ -7,14 +7,14 @@ use sparkline::*;
 use std::io::{prelude::*, BufReader};
 
 pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyhow::Error> {
-    let line_counts = bin_timestamps(timestamps, length);
+    let timestamps_per_bucket = timestamp_frequency_distribution(timestamps, length);
     let (min, max) = (
-        *line_counts.iter().min().unwrap() as f64,
-        *line_counts.iter().max().unwrap() as f64,
+        *timestamps_per_bucket.iter().min().unwrap() as f64,
+        *timestamps_per_bucket.iter().max().unwrap() as f64,
     );
     let sparky = select_sparkline(SparkThemeName::Classic);
 
-    let sparkline = line_counts
+    let sparkline = timestamps_per_bucket
         .iter()
         .map(|count| sparky.spark(min, max, *count as f64).to_owned())
         .collect();
@@ -120,7 +120,7 @@ fn marker_offsets(count: usize, terminal_width: usize) -> Vec<usize> {
     offsets
 }
 
-fn bin_timestamps(timestamps: &[i64], bucket_count: usize) -> Vec<usize> {
+fn timestamp_frequency_distribution(timestamps: &[i64], bucket_count: usize) -> Vec<usize> {
     let first_timestamp = timestamps.iter().min().unwrap();
     let last_timestamp = timestamps.iter().max().unwrap();
     let duration_seconds = last_timestamp - first_timestamp;
@@ -200,13 +200,13 @@ Nov 23 14:21:53 ip-10-1-26-81 haproxy[20128]: 54.209.125.72:58030 [23/Nov/2019:1
     }
 
     #[test]
-    fn bin_timestamps_() {
+    fn timestamp_frequency_distribution_() {
         let timestamps = vec![1, 2, 3, 4, 5];
-        let bins = bin_timestamps(&timestamps, 5);
+        let bins = timestamp_frequency_distribution(&timestamps, 5);
         assert_eq!(bins, [1, 1, 1, 1, 1]);
 
         let timestamps = vec![1, 2, 3, 4, 5, 6];
-        let bins = bin_timestamps(&timestamps, 3);
+        let bins = timestamp_frequency_distribution(&timestamps, 3);
         assert_eq!(bins, [2, 2, 2]);
     }
 
