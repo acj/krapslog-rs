@@ -9,6 +9,14 @@ When troubleshooting a problem with a production service, I often need to get th
 
 ## Installing
 
+### Homebrew
+
+```
+brew install acj/krapslog-rs/krapslog
+```
+
+### From source
+
 ```
 cargo install krapslog
 ```
