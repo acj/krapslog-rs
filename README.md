@@ -73,6 +73,13 @@ $ krapslog --markers 10 /var/log/haproxy.log
 Sat Nov 23 06:26:40
 ```
 
+Integrate with other tools:
+
+```
+$ zcat /var/log/haproxy.log.1.gz | krapslog
+▂▁▂▁▂▁▂▂▂▁▃▁▁▁▁▁▁▁▁▁▁▁▂▂▁▁▂▃▂▂▃▁▂▁▂▂▂▂▁▂▁▂▄▂▂▂▂▂▂▂▃▂▂▂▂▄▃▃▄▃▃▃▃▄▄▄▄▄▃▄▄▅▄▃▄▄▅▅▅▅
+```
+
 ## Custom date formats
 
 By default, krapslog assumes that log timestamps are in the [Common Log Format (CLF)](https://httpd.apache.org/docs/1.3/logs.html#common), which looks like this: "02/Jan/2006:15:04:05.000" (timezone offset is ignored). However, you can use the `format` parameter to find timestamps in other formats. The parameter value must use a format that's recognized by [strftime](https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html).
