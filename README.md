@@ -12,7 +12,7 @@ When troubleshooting a problem with a production service, I often need to get th
 ### Homebrew
 
 ```
-brew install acj/krapslog-rs/krapslog
+brew install acj/taps/krapslog
 ```
 
 ### From source
