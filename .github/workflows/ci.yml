@@ -35,3 +35,8 @@ jobs:
       run: cargo test --release --locked
     - name: Run format check and linter
       run: cargo fmt -- --check && cargo clippy -- -Dwarnings
+    - name: Upload Binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: binaries
+        path: target/release/krapslog
