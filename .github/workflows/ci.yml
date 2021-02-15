@@ -35,6 +35,8 @@ jobs:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v1
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
       - name: Build
         run: cargo build --release --locked
       - name: Run tests
