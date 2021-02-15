@@ -8,16 +8,54 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build:
+          - linux
+          - macos
+          - windows
+        include:
+          - build: linux
+            os: ubuntu-20.04
+            target: x86_64-unknown-linux-gnu
+          - build: macos
+            os: macos-latest
+            target: x86_64-apple-darwin
+          - build: windows
+            os: windows-2019
+            target: i686-pc-windows-msvc
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --locked
-    - name: Run tests
-      run: cargo test --locked
-    - name: Run format check and linter
-      run: cargo fmt -- --check && cargo clippy -- -Dwarnings
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Build
+        run: cargo build --release --locked
+      - name: Run tests
+        run: cargo test --release --locked
+      - name: Run format check and linter
+        run: cargo fmt -- --check && cargo clippy --release --locked -- -Dwarnings
+      - name: Upload Linux and macOS Binaries
+        if: matrix.build == 'linux' || matrix.build == 'macos'
+        uses: actions/upload-artifact@v2
+        with:
+          name: krapslog-${{ matrix.target }}
+          path: target/release/krapslog
+      - name: Upload Windows Binaries
+        if: matrix.build == 'windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: krapslog-${{ matrix.target }}.exe
+          path: target/release/krapslog.exe
