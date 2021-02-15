@@ -16,8 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: cargo build
+      run: cargo build --locked
     - name: Run tests
-      run: cargo test
+      run: cargo test --locked
     - name: Run format check and linter
       run: cargo fmt -- --check && cargo clippy -- -Dwarnings
