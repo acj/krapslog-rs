@@ -27,16 +27,16 @@ jobs:
             target: x86_64-apple-darwin
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: Swatinem/rust-cache@v1
-    - name: Build
-      run: cargo build --release --locked
-    - name: Run tests
-      run: cargo test --release --locked
-    - name: Run format check and linter
-      run: cargo fmt -- --check && cargo clippy -- -Dwarnings
-    - name: Upload Binaries
-      uses: actions/upload-artifact@v2
-      with:
-        name: krapslog-${{ matrix.target }}
-        path: target/release/krapslog
+      - uses: actions/checkout@v2
+      - uses: Swatinem/rust-cache@v1
+      - name: Build
+        run: cargo build --release --locked
+      - name: Run tests
+        run: cargo test --release --locked
+      - name: Run format check and linter
+        run: cargo fmt -- --check && cargo clippy -- -Dwarnings
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: krapslog-${{ matrix.target }}
+          path: target/release/krapslog
