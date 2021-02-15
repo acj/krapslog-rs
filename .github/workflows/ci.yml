@@ -18,6 +18,7 @@ jobs:
         build:
           - linux
           - macos
+          - windows
         include:
           - build: linux
             os: ubuntu-20.04
@@ -25,6 +26,9 @@ jobs:
           - build: macos
             os: macos-latest
             target: x86_64-apple-darwin
+          - build: windows
+            os: windows-2019
+            target: i686-pc-windows-msvc
 
     steps:
       - name: Install Rust
