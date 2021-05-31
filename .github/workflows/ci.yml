@@ -57,3 +57,39 @@ jobs:
         with:
           name: krapslog-${{ matrix.target }}.exe
           path: target/release/krapslog.exe
+
+  release:
+    name: Publish release
+    runs-on: ubuntu-20.04
+    if: "startsWith(github.ref, 'refs/tags/')"
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          path: raw-artifacts
+      - name: Prepare binary archives
+        run: |
+          set -euo pipefail
+
+          mkdir staging
+          mv $(find raw-artifacts -type f | xargs) staging
+
+          mkdir archives
+          cd staging
+          for target in $(ls); do
+            if echo "$target" | grep -q ".exe" 2>/dev/null; then
+              echo "Found Windows binary for target $target"
+              zip -j ../archives/$target.zip $target
+            else
+              echo "Found unix binary for target $target"
+              tar czf ../archives/$target.tar.gz $target
+            fi
+          done
+
+      - uses: "marvinpinto/action-automatic-releases@v1.1.1"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          draft: true
+          prerelease: false
+          files: |
+            archives/*
