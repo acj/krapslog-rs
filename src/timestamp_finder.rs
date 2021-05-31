@@ -64,15 +64,15 @@ fn timestamp_finder_strftime_to_regex() {
 
 #[test]
 fn timestamp_finder_epochseconds() {
-    //Full 10 digit recent epoch
     let format = "%s";
     let date_finder = TimestampFinder::new(format).unwrap();
+
+    //Full 10 digit recent epoch
     let log = "1621568291 ip-10-1-26-81 haproxy[20128]: 54.242.135...";
     let timestamp = date_finder.find_timestamp(log).unwrap();
     assert_eq!(timestamp, 1621568291);
 
     //Shorter timestamp (15th Jan 1970)
-    let date_finder = TimestampFinder::new(format).unwrap();
     let log = "1234567 ip-10-1-26-81 haproxy[20128]: 54.242.135...";
     let timestamp = date_finder.find_timestamp(log).unwrap();
     assert_eq!(timestamp, 1234567);
