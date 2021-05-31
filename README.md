@@ -106,6 +106,7 @@ krapslog --format "%b %d, %Y %H:%M:%S" ...
 | %M        | Minute number (00--59), zero-padded to 2 digits. |
 | %S        | Second number (00--60), zero-padded to 2 digits. |
 | %.f       | Similar to .%f but left-aligned. These all consume the leading dot. |
+| %s        | UNIX timestamp. Seconds since 1970-01-01 00:00 UTC. |
 
 ## Contributing
 
