@@ -37,6 +37,7 @@ impl<'a> TimestampFinder<'a> {
             .replace("%M", r"\d{1,2}")
             .replace("%S", r"\d{1,2}")
             .replace("%.f", r"\d{1,}")
+            .replace("%s", r"\d{1,10}")
         // TODO: Add support for remaining characters. https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html
     }
 }
@@ -59,4 +60,20 @@ fn timestamp_finder_strftime_to_regex() {
     };
 
     convert_compile_match("%d/%b/%Y:%H:%M:%S%.f", "06/Jan/2006:13:04:05.000");
+}
+
+#[test]
+fn timestamp_finder_epochseconds() {
+    //Full 10 digit recent epoch
+    let format = "%s";
+    let date_finder = TimestampFinder::new(format).unwrap();
+    let log = "1621568291 ip-10-1-26-81 haproxy[20128]: 54.242.135...";
+    let timestamp = date_finder.find_timestamp(log).unwrap();
+    assert_eq!(timestamp, 1621568291);
+
+    //Shorter timestamp (15th Jan 1970)
+    let date_finder = TimestampFinder::new(format).unwrap();
+    let log = "1234567 ip-10-1-26-81 haproxy[20128]: 54.242.135...";
+    let timestamp = date_finder.find_timestamp(log).unwrap();
+    assert_eq!(timestamp, 1234567);
 }
