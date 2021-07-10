@@ -24,7 +24,6 @@ pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyh
 pub fn scan_for_timestamps<R>(
     reader: R,
     format: &str,
-    filter: Option<&str>,
 ) -> Result<Vec<i64>, anyhow::Error>
 where
     R: Read,
@@ -33,17 +32,7 @@ where
     let timestamps = BufReader::new(reader)
         .lines()
         .filter_map(Result::ok)
-        .filter_map(|line| match filter {
-            Some(filter) => {
-                if line.contains(filter) {
-                    date_finder.find_timestamp(&line)
-                } else {
-                    None
-                }
-            }
-
-            None => date_finder.find_timestamp(&line),
-        })
+        .filter_map(|line| date_finder.find_timestamp(&line))
         .collect();
     Ok(timestamps)
 }
@@ -162,7 +151,7 @@ Nov 23 06:26:49 ip-10-1-1-1 haproxy[20128]: 10.1.1.12:38899 [23/Nov/2019:06:35:4
 e4ff7f1d9d80f HTTP/1.1\"
 ";
         let format = "%d/%b/%Y:%H:%M:%S%.f";
-        let timestamps = scan_for_timestamps(log.as_bytes(), format, None).unwrap();
+        let timestamps = scan_for_timestamps(log.as_bytes(), format).unwrap();
         let sparkline = build_sparkline(&timestamps, 80).unwrap();
         assert_eq!(
             sparkline,
@@ -176,27 +165,8 @@ e4ff7f1d9d80f HTTP/1.1\"
 Nov 23 14:21:53 ip-10-1-26-81 haproxy[20128]: 54.209.125.72:58030 [23/Nov/2019:14:21:53.241] public repackager/i-0728dc03214405429 0/0/0/246/246 200 810/8324 - - ---- 17/17/12/0/0 0/0 {1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 akamai.n|} {||7870|} \"GET /deliveries/4fb7b6ff75f8a13da4ac482e25e29790105ba075.m3u8?origin_v2=1 HTTP/1.1\"
 ";
         let format = "%d/%b/%Y:%H:%M:%S%.f";
-        let timestamps = scan_for_timestamps(log.as_bytes(), format, None).unwrap();
+        let timestamps = scan_for_timestamps(log.as_bytes(), format).unwrap();
         assert_eq!(timestamps, [1574490400, 1574518913]);
-    }
-
-    #[test]
-    fn scan_for_timestamps_with_filter() {
-        let log = "Nov 23 06:26:40 ip-10-1-26-81 haproxy[20128]: 54.242.135.245:57305 [23/Nov/2019:06:26:40.781] public repackager/i-05fa49c0e7db8c328 0/0/0/78/78 206 913/458 - - ---- 9/9/6/0/0 0/0 {1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 akamai.n|bytes=0-0} {||1|bytes 0-0/499704} \"GET /deliveries/2518cb13a48bdf53b2f936f44e7042a3cc7baa06.m3u8/seg-88-v1-a1.ts HTTP/1.1\"
-Nov 23 14:21:53 ip-10-1-26-81 haproxy[20128]: 54.209.125.72:58030 [23/Nov/2019:14:21:53.241] public repackager/i-0728dc03214405429 0/0/0/246/246 200 810/8324 - - ---- 17/17/12/0/0 0/0 {1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 v1-akamaitech.net(ghost) (AkamaiGHost), 1.1 akamai.n|} {||7870|} \"GET /deliveries/4fb7b6ff75f8a13da4ac482e25e29790105ba075.m3u8?origin_v2=1 HTTP/1.1\"
-";
-        let format = "%d/%b/%Y:%H:%M:%S%.f";
-        let timestamps = scan_for_timestamps(log.as_bytes(), format, Some("repackager")).unwrap();
-        assert_eq!(timestamps, [1574490400, 1574518913]);
-
-        let timestamps =
-            scan_for_timestamps(log.as_bytes(), format, Some("i-05fa49c0e7db8c328")).unwrap();
-        assert_eq!(timestamps, [1574490400]);
-
-        let timestamps =
-            scan_for_timestamps(log.as_bytes(), format, Some("nonexistent_widget_modulator"))
-                .unwrap();
-        assert_eq!(timestamps, []);
     }
 
     #[test]

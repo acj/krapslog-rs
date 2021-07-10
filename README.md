@@ -37,7 +37,6 @@ FLAGS:
     -V, --version     Prints version information
 
 OPTIONS:
-    -f, --filter <FILTER>      Only consider lines that contain this value
     -F, --format <FORMAT>      Timestamp format to match [default: %d/%b/%Y:%H:%M:%S%.f]
     -m, --markers <MARKERS>    Number of time markers to display [default: 0]
 
@@ -76,7 +75,7 @@ Sat Nov 23 06:26:40
 Integrate with other tools:
 
 ```
-$ zcat /var/log/haproxy.log.1.gz | krapslog
+$ zcat /var/log/haproxy.log.1.gz | grep -v "unimportant.html" | krapslog
 ▂▁▂▁▂▁▂▂▂▁▃▁▁▁▁▁▁▁▁▁▁▁▂▂▁▁▂▃▂▂▃▁▂▁▂▂▂▂▁▂▁▂▄▂▂▂▂▂▂▂▃▂▂▂▂▄▃▃▄▃▃▃▃▄▄▄▄▄▃▄▄▅▄▃▄▄▅▅▅▅
 ```
 

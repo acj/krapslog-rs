@@ -19,14 +19,6 @@ fn main() -> Result<()> {
         .version(VERSION)
         .about("Visualize log files using sparklines")
         .arg(
-            Arg::with_name("FILTER")
-                .short("f")
-                .long("filter")
-                .help("Only consider lines that contain this value")
-                .required(false)
-                .takes_value(true),
-        )
-        .arg(
             Arg::with_name("FILE")
                 .help("Log file to analyze")
                 .required(false)
@@ -97,7 +89,7 @@ fn main() -> Result<()> {
     };
 
     let timestamps: Vec<i64> =
-        krapslog::scan_for_timestamps(reader, timestamp_format, arg_matches.value_of("FILTER"))?;
+        krapslog::scan_for_timestamps(reader, timestamp_format)?;
     if timestamps.is_empty() {
         return Err(anyhow!("Found no lines with a matching timestamp"));
     }
