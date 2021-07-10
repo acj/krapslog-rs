@@ -21,10 +21,7 @@ pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyh
     Ok(sparkline)
 }
 
-pub fn scan_for_timestamps<R>(
-    reader: R,
-    format: &str,
-) -> Result<Vec<i64>, anyhow::Error>
+pub fn scan_for_timestamps<R>(reader: R, format: &str) -> Result<Vec<i64>, anyhow::Error>
 where
     R: Read,
 {
