@@ -2,7 +2,7 @@
 name = "krapslog"
 version = "0.3.0"
 authors = ["Adam Jensen <adam@acj.sh>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 repository = "https://github.com/acj/krapslog-rs"
 description = "Visualize log files using sparklines"
