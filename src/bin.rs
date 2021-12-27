@@ -4,8 +4,8 @@ extern crate progress_streams;
 extern crate regex;
 extern crate sparkline;
 
-use anyhow::*;
-use clap::{App, Arg};
+use anyhow::{anyhow, Result};
+use clap::{value_t, App, Arg};
 use indicatif::{ProgressBar, ProgressStyle};
 use progress_streams::ProgressReader;
 use std::fs;
@@ -95,7 +95,7 @@ fn main() -> Result<()> {
 
     pb.finish_and_clear();
 
-    let num_markers = clap::value_t!(arg_matches.value_of("MARKERS"), usize)?;
+    let num_markers = value_t!(arg_matches.value_of("MARKERS"), usize)?;
     let (header, footer) = krapslog::build_time_markers(&timestamps, num_markers, terminal_width);
     let sparkline = krapslog::build_sparkline(&timestamps, terminal_width)?;
     print!("{}", header);
