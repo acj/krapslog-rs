@@ -36,9 +36,8 @@ jobs:
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
+          default: true
           toolchain: stable
-          components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v1
       - uses: actions/checkout@v2
       - name: Build
