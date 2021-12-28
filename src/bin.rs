@@ -1,9 +1,3 @@
-extern crate clap;
-extern crate krapslog;
-extern crate progress_streams;
-extern crate regex;
-extern crate sparkline;
-
 use anyhow::{anyhow, Result};
 use clap::{value_t, App, Arg};
 use indicatif::{ProgressBar, ProgressStyle};
