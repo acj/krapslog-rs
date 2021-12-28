@@ -13,6 +13,21 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
+  format:
+    name: Check code formatting
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        default: true
+        toolchain: stable
+    - name: Run cargo fmt
+      run: |
+        cargo fmt --all -- --check
+
   build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -44,8 +59,6 @@ jobs:
         run: cargo build --release --locked
       - name: Run tests
         run: cargo test --release --locked
-      - name: Run format check and linter
-        run: cargo fmt -- --check && cargo clippy --release --locked -- -Dwarnings
       - name: Prepare binary for upload
         if: runner.os != 'windows'
         run: |
