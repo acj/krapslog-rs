@@ -1,17 +1,18 @@
 use chrono::NaiveDateTime;
 use regex::Regex;
-pub struct TimestampFinder<'a> {
-    datetime_format: &'a str,
+
+pub struct TimestampFinder {
+    datetime_format: String,
     regex: Regex,
 }
 
-impl<'a> TimestampFinder<'a> {
-    pub fn new(datetime_format: &'a str) -> Result<Self, anyhow::Error> {
+impl TimestampFinder {
+    pub fn new(datetime_format: &str) -> Result<Self, anyhow::Error> {
         let datetime_regex = Self::strftime_to_regex(datetime_format);
         let regex = Regex::new(&datetime_regex)?;
 
         Ok(TimestampFinder {
-            datetime_format,
+            datetime_format: datetime_format.to_string(),
             regex,
         })
     }
@@ -19,7 +20,7 @@ impl<'a> TimestampFinder<'a> {
     pub fn find_timestamp(&self, s: &str) -> Option<i64> {
         let regex_match = self.regex.captures(s)?.get(0)?;
         let datetime =
-            NaiveDateTime::parse_from_str(regex_match.as_str(), self.datetime_format).ok()?;
+            NaiveDateTime::parse_from_str(regex_match.as_str(), &self.datetime_format).ok()?;
         Some(datetime.timestamp())
     }
 
