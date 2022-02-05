@@ -1,10 +1,12 @@
+mod sparkline;
 mod time_marker;
 mod timestamp_finder;
 
-use crate::timestamp_finder::TimestampFinder;
 use anyhow::*;
-use sparkline::*;
 use std::io::{prelude::*, BufReader};
+
+use crate::sparkline::sparkline;
+use crate::timestamp_finder::TimestampFinder;
 
 pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String> {
     let timestamps_per_bucket = timestamp_frequency_distribution(timestamps, length);
@@ -12,11 +14,9 @@ pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String> {
         *timestamps_per_bucket.iter().min().unwrap() as f64,
         *timestamps_per_bucket.iter().max().unwrap() as f64,
     );
-    let sparky = select_sparkline(SparkThemeName::Classic);
-
     let sparkline = timestamps_per_bucket
         .iter()
-        .map(|count| sparky.spark(min, max, *count as f64).to_owned())
+        .map(|count| sparkline(min, max, *count as f64).to_owned())
         .collect();
     Ok(sparkline)
 }
