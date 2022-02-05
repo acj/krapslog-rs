@@ -6,7 +6,7 @@ use anyhow::*;
 use sparkline::*;
 use std::io::{prelude::*, BufReader};
 
-pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyhow::Error> {
+pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String> {
     let timestamps_per_bucket = timestamp_frequency_distribution(timestamps, length);
     let (min, max) = (
         *timestamps_per_bucket.iter().min().unwrap() as f64,
@@ -21,7 +21,7 @@ pub fn build_sparkline(timestamps: &[i64], length: usize) -> Result<String, anyh
     Ok(sparkline)
 }
 
-pub fn scan_for_timestamps<R>(reader: R, format: &str) -> Result<Vec<i64>, anyhow::Error>
+pub fn scan_for_timestamps<R>(reader: R, format: &str) -> Result<Vec<i64>>
 where
     R: Read,
 {
