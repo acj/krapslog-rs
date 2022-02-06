@@ -133,7 +133,6 @@ dependencies = [
  "chrono",
  "clap",
  "indicatif",
- "lazy_static",
  "progress-streams",
  "regex",
  "terminal_size",
