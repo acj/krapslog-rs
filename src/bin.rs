@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use clap::{value_t, App, Arg};
+use clap::{App, Arg};
 use indicatif::{ProgressBar, ProgressStyle};
 use progress_streams::ProgressReader;
 use std::fs;
@@ -13,14 +13,14 @@ fn main() -> Result<()> {
         .version(VERSION)
         .about("Visualize log files using sparklines")
         .arg(
-            Arg::with_name("FILE")
+            Arg::new("FILE")
                 .help("Log file to analyze")
                 .required(false)
                 .index(1),
         )
         .arg(
-            Arg::with_name("FORMAT")
-                .short("F")
+            Arg::new("FORMAT")
+                .short('F')
                 .long("format")
                 .help("Timestamp format to match")
                 .takes_value(true)
@@ -28,8 +28,8 @@ fn main() -> Result<()> {
                 .default_value("%d/%b/%Y:%H:%M:%S%.f"),
         )
         .arg(
-            Arg::with_name("MARKERS")
-                .short("m")
+            Arg::new("MARKERS")
+                .short('m')
                 .long("markers")
                 .help("Number of time markers to display")
                 .takes_value(true)
@@ -37,8 +37,8 @@ fn main() -> Result<()> {
                 .default_value("0"),
         )
         .arg(
-            Arg::with_name("PROGRESS")
-                .short("p")
+            Arg::new("PROGRESS")
+                .short('p')
                 .long("progress")
                 .help("Display progress while working. Requires a file.")
                 .required(false)
@@ -89,7 +89,7 @@ fn main() -> Result<()> {
 
     pb.finish_and_clear();
 
-    let num_markers = value_t!(arg_matches.value_of("MARKERS"), usize)?;
+    let num_markers = arg_matches.value_of_t("MARKERS")?;
     let (header, footer) = krapslog::build_time_markers(&timestamps, num_markers, terminal_width);
     let sparkline = krapslog::build_sparkline(&timestamps, terminal_width)?;
     print!("{}", header);
