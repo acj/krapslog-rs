@@ -25,23 +25,22 @@ cargo install krapslog
 
 ```
 $ krapslog -h
-[...]
+krapslog 0.3.2
 Visualize log files using sparklines
 
 USAGE:
-    krapslog [FLAGS] [OPTIONS] [FILE]
-
-FLAGS:
-    -p, --progress    Display progress while working. Requires a file.
-    -h, --help        Prints help information
-    -V, --version     Prints version information
-
-OPTIONS:
-    -F, --format <FORMAT>      Timestamp format to match [default: %d/%b/%Y:%H:%M:%S%.f]
-    -m, --markers <MARKERS>    Number of time markers to display [default: 0]
+    krapslog [OPTIONS] [FILE]
 
 ARGS:
     <FILE>    Log file to analyze
+
+OPTIONS:
+    -c, --concurrency <CONCURRENCY>    Number of threads to use when processing large files
+                                       (defaults to number of CPU cores) [default: 8]
+    -F, --format <FORMAT>              Timestamp format to match [default: %d/%b/%Y:%H:%M:%S%.f]
+    -h, --help                         Print help information
+    -m, --markers <MARKERS>            Number of time markers to display [default: 0]
+    -V, --version                      Print version information
 ```
 
 ## Examples
