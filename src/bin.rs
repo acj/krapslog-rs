@@ -1,7 +1,5 @@
 use anyhow::{anyhow, Result};
 use clap::{App, Arg};
-use indicatif::{ProgressBar, ProgressStyle};
-use progress_streams::ProgressReader;
 use std::fs;
 use std::io::{self, prelude::*};
 use terminal_size::{terminal_size, Width};
@@ -35,23 +33,10 @@ fn main() -> Result<()> {
                 .takes_value(true)
                 .required(false)
                 .default_value("0"),
-        )
-        .arg(
-            Arg::new("PROGRESS")
-                .short('p')
-                .long("progress")
-                .help("Display progress while working. Requires a file.")
-                .required(false)
-                .takes_value(false),
         );
     let arg_matches = app.get_matches();
 
     let timestamp_format = arg_matches.value_of("FORMAT").unwrap();
-    let pb = ProgressBar::new(0);
-    pb.set_draw_delta(10_000_000);
-    pb.set_style(
-        ProgressStyle::default_bar().template("[{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})"),
-    );
 
     let reader: Box<dyn Read> = match arg_matches.value_of("FILE") {
         None => {
@@ -64,16 +49,7 @@ fn main() -> Result<()> {
         Some(filename) => {
             let file = fs::File::open(filename)?;
 
-            if arg_matches.is_present("PROGRESS") {
-                let file_metadata = fs::metadata(filename)?;
-                pb.set_length(file_metadata.len());
-
-                Box::new(ProgressReader::new(file, |bytes_read| {
-                    pb.inc(bytes_read as u64);
-                }))
-            } else {
-                Box::new(file)
-            }
+            Box::new(file)
         }
     };
 
@@ -86,8 +62,6 @@ fn main() -> Result<()> {
     if timestamps.is_empty() {
         return Err(anyhow!("Found no lines with a matching timestamp"));
     }
-
-    pb.finish_and_clear();
 
     let num_markers = arg_matches.value_of_t("MARKERS")?;
     let (header, footer) = krapslog::build_time_markers(&timestamps, num_markers, terminal_width);
