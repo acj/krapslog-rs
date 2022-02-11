@@ -110,10 +110,14 @@ fn timestamp_frequency_distribution(timestamps: &[i64], bucket_count: usize) -> 
     let first_timestamp = timestamps.iter().min().unwrap();
     let last_timestamp = timestamps.iter().max().unwrap();
     let duration_seconds = last_timestamp - first_timestamp;
-    let seconds_per_bucket = (duration_seconds as f64 / bucket_count as f64).ceil();
+    let seconds_per_bucket = duration_seconds as f64 / bucket_count as f64;
+
     let mut timestamps_per_bucket = vec![0; bucket_count];
     for timestamp in timestamps {
-        let bucket_index = ((timestamp - first_timestamp) as f64 / seconds_per_bucket) as usize;
+        let bucket_index = usize::min(
+            ((timestamp - first_timestamp) as f64 / seconds_per_bucket) as usize,
+            bucket_count - 1,
+        );
         timestamps_per_bucket[bucket_index] += 1;
     }
 
@@ -152,7 +156,7 @@ e4ff7f1d9d80f HTTP/1.1\"
         let sparkline = build_sparkline(&timestamps, 80).unwrap();
         assert_eq!(
             sparkline,
-            "█▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁"
+            "█▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁█"
         );
     }
 
