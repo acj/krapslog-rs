@@ -53,7 +53,15 @@ jobs:
         with:
           default: true
           toolchain: stable
-      - uses: Swatinem/rust-cache@v1
+      - name: Cargo Cache
+        uses: actions/cache@v2.1.7
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.target }}-cargo-
       - uses: actions/checkout@v2
       - name: Build
         run: cargo build --release --locked
