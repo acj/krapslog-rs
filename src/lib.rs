@@ -39,7 +39,7 @@ pub fn build_time_markers(
     marker_count: usize,
     terminal_width: usize,
 ) -> (String, String) {
-    if marker_count == 0 {
+    if marker_count < 2 || timestamps.len() < 2 {
         return (String::from(""), String::from(""));
     }
 
@@ -257,6 +257,17 @@ e4ff7f1d9d80f HTTP/1.1\"
 2019-11-23 06:26:40                                                             
 "
         );
+    }
+
+    #[test]
+    fn build_time_markers_too_few_timestamps() {
+        let log = "Nov 23 06:26:40 ip-10-1-1-1 haproxy[20128]: 10.1.1.10:57305 [23/Nov/2019:06:26:40.781] public myapp/i-05fa49c0e7db8c328 0/0/0/78/78 206 913/458 - - ---- 9/9/6/0/0 0/0 {bytes=0-0} {||1|bytes 0-0/499704} \"GET \
+        /2518cb13a48bdf53b2f936f44e7042a3cc7baa06 HTTP/1.1\"\n";
+        let format = "%d/%b/%Y:%H:%M:%S%.f";
+        let timestamps = scan_for_timestamps(log.as_bytes(), format).unwrap();
+        let (header, footer) = build_time_markers(&timestamps, 8, 80);
+        assert_eq!(header, "");
+        assert_eq!(footer, "");
     }
 
     #[test]
