@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use clap::{App, Arg};
+use clap::{Arg, Command};
 use rayon::prelude::*;
 use std::fs;
 use terminal_size::{terminal_size, Width};
@@ -11,7 +11,7 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 fn main() -> Result<()> {
     let num_cores = num_cpus::get_physical();
     let num_cores_for_display = format!("{}", num_cores);
-    let app = App::new("krapslog")
+    let cmd = Command::new("krapslog")
         .version(VERSION)
         .about("Visualize log files using sparklines")
         .arg(
@@ -47,7 +47,7 @@ fn main() -> Result<()> {
                 .required(false)
                 .default_value(&num_cores_for_display),
         );
-    let arg_matches = app.get_matches();
+    let arg_matches = cmd.get_matches();
 
     let timestamp_format = arg_matches.value_of("FORMAT").unwrap();
     let timestamps = match arg_matches.value_of("FILE") {
