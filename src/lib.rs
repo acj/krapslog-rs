@@ -2,7 +2,7 @@ mod sparkline;
 mod time_marker;
 mod timestamp_finder;
 
-use anyhow::*;
+use anyhow::Result;
 use std::io::{prelude::*, BufReader};
 
 use crate::sparkline::sparkline;
@@ -72,7 +72,12 @@ pub fn build_time_markers(
             timestamp_location: time_marker::TimestampLocation::Top,
             vertical_offset: index + 1,
         })
-        .for_each(|time_marker| time_marker.render(&mut header_canvas));
+        .for_each(|time_marker| {
+            match time_marker.render(&mut header_canvas) {
+                Err(e) => eprintln!("couldn't render time marker: {}", e),
+                _ => {}
+            };
+        });
 
     footer_timestamp_offsets
         .iter()
@@ -83,7 +88,12 @@ pub fn build_time_markers(
             timestamp_location: time_marker::TimestampLocation::Bottom,
             vertical_offset: footer_timestamp_offsets.len() - index,
         })
-        .for_each(|time_marker| time_marker.render(&mut footer_canvas));
+        .for_each(|time_marker| {
+            match time_marker.render(&mut footer_canvas) {
+                Err(e) => eprintln!("couldn't render time marker: {}", e),
+                _ => {}
+            };
+        });
 
     (format!("{}", header_canvas), format!("{}", footer_canvas))
 }

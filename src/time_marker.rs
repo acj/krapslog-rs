@@ -1,3 +1,4 @@
+use anyhow::{anyhow, Result};
 use chrono::NaiveDateTime;
 use std::fmt;
 
@@ -42,8 +43,10 @@ pub struct TimeMarker {
 }
 
 impl TimeMarker {
-    pub fn render(&self, canvas: &mut Canvas) {
-        let time = NaiveDateTime::from_timestamp(self.timestamp, 0).to_string();
+    pub fn render(&self, canvas: &mut Canvas) -> Result<()> {
+        let time = NaiveDateTime::from_timestamp_opt(self.timestamp, 0)
+            .ok_or(anyhow!("timestamp is invalid: {}", self.timestamp))?
+            .to_string();
 
         let (stem_rows, timestamp_row, timestamp_horizontal_offset) = match &self.timestamp_location
         {
@@ -74,7 +77,9 @@ impl TimeMarker {
                 &time,
             );
             s
-        })
+        });
+
+        Ok(())
     }
 }
 
@@ -92,7 +97,7 @@ mod tests {
             vertical_offset: 1,
         };
 
-        time_marker.render(&mut canvas);
+        time_marker.render(&mut canvas).expect("failed to render");
 
         let rendered = format!("\n{}", canvas);
         assert_eq!(
@@ -117,7 +122,7 @@ mod tests {
             vertical_offset: 1,
         };
 
-        time_marker.render(&mut canvas);
+        time_marker.render(&mut canvas).expect("failed to render");
         let rendered = format!("\n{}", canvas);
         assert_eq!(
             rendered,
@@ -156,7 +161,7 @@ mod tests {
         [time_marker, time_marker2, time_marker3]
             .iter()
             .for_each(|marker| {
-                marker.render(&mut canvas);
+                marker.render(&mut canvas).expect("failed to render");
             });
 
         let rendered = format!("\n{}", canvas);
@@ -197,7 +202,7 @@ mod tests {
         [time_marker, time_marker2, time_marker3]
             .iter()
             .for_each(|marker| {
-                marker.render(&mut canvas);
+                marker.render(&mut canvas).expect("failed to render");
             });
 
         let rendered = format!("\n{}", canvas);
