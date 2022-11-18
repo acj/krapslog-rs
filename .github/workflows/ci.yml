@@ -22,8 +22,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@984d158d699777abbaa79de23de3134e60c187fa # stable branch
     - name: Run cargo fmt
-      run: |
-        cargo fmt --all -- --check
+      run: cargo fmt --all -- --check
 
   build:
     runs-on: ${{ matrix.os }}
