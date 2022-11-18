@@ -10,11 +10,9 @@ jobs:
     name: Publish crate
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+      - uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@984d158d699777abbaa79de23de3134e60c187fa # stable branch
       - run: |
           cargo login ${{ secrets.CARGO_TOKEN }}
           cargo publish
