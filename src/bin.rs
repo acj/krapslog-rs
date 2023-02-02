@@ -38,6 +38,14 @@ fn main() -> Result<()> {
                 .default_value("0"),
         )
         .arg(
+            Arg::new("HEIGHT")
+                .short('h')
+                .long("height")
+                .help("Height (in lines) of the displayed sparkline")
+                .value_parser(clap::value_parser!(usize))
+                .default_value("1")
+        )
+        .arg(
             Arg::new("CONCURRENCY")
                 .short('c')
                 .long("concurrency")
@@ -85,8 +93,9 @@ fn main() -> Result<()> {
     };
 
     let num_markers: usize = *arg_matches.get_one("MARKERS").unwrap();
+    let num_lines: usize = std::cmp::max(1, *arg_matches.get_one("HEIGHT").unwrap());
     let (header, footer) = krapslog::build_time_markers(&timestamps, num_markers, terminal_width);
-    let sparkline = krapslog::build_sparkline(&timestamps, terminal_width)?;
+    let sparkline = krapslog::build_sparkline(&timestamps, terminal_width, num_lines);
     print!("{}", header);
     println!("{}", sparkline);
     print!("{}", footer);

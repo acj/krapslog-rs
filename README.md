@@ -24,23 +24,21 @@ cargo install krapslog
 ## Usage
 
 ```
-$ krapslog -h
-krapslog 0.3.2
+$ krapslog --help
 Visualize log files using sparklines
 
-USAGE:
-    krapslog [OPTIONS] [FILE]
+Usage: krapslog [OPTIONS] [FILE]
 
-ARGS:
-    <FILE>    Log file to analyze
+Arguments:
+  [FILE]  Log file to analyze
 
-OPTIONS:
-    -c, --concurrency <CONCURRENCY>    Number of threads to use when processing large files
-                                       (defaults to number of CPU cores) [default: 8]
-    -F, --format <FORMAT>              Timestamp format to match [default: %d/%b/%Y:%H:%M:%S%.f]
-    -h, --help                         Print help information
-    -m, --markers <MARKERS>            Number of time markers to display [default: 0]
-    -V, --version                      Print version information
+Options:
+  -F, --format <FORMAT>            Timestamp format to match [default: %d/%b/%Y:%H:%M:%S%.f]
+  -m, --markers <MARKERS>          Number of time markers to display [default: 0]
+  -h, --height <HEIGHT>            Height (in lines) of the displayed sparkline [default: 1]
+  -c, --concurrency <CONCURRENCY>  Number of threads to use when processing large files (defaults to number of CPU cores) [default: 8]
+  -h, --help                       Print help
+  -V, --version                    Print version
 ```
 
 ## Examples
@@ -69,6 +67,17 @@ $ krapslog --markers 10 /var/log/haproxy.log
 |        |        Sat Nov 23 08:13:36
 |        Sat Nov 23 07:20:08
 Sat Nov 23 06:26:40
+```
+
+Increase the display resolution:
+
+```
+$ krapslog --height 5 /var/log/haproxy.log
+                                                                                        ▁           ▁  ▁▃▃██
+                                                                                    ▁ ▁▅█▃▅▂▂▄▃▃▅▅▇▆█▇██████
+                                                                     ▁▆▅▇▅▃▆▇  ▁ ▁▁▄█▇██████████████████████
+                                            ▁▁ ▁▂ ▅▂  ▂▃▂▁ ▃▁ ▂▂▅▅▂▄▅████████▇▆█▅███████████████████████████
+▇▇▇▆▇▇▅▅▆▅▅▄▃▄▄▇▄▆▃▅▄▅▅▆▅▅▃▁▁▃▃▄▄▄▃▄▅▅▆█▅▅▇▅██▇██████▇████▇█████████████████████████████████████████████████
 ```
 
 Integrate with other tools:
