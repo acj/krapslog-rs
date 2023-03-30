@@ -22,14 +22,6 @@ fn main() -> Result<()> {
                 .index(1),
         )
         .arg(
-            Arg::new("FORMAT")
-                .short('F')
-                .long("format")
-                .help("Timestamp format to match")
-                .required(false)
-                .default_value("%d/%b/%Y:%H:%M:%S%.f"),
-        )
-        .arg(
             Arg::new("MARKERS")
                 .short('m')
                 .long("markers")
@@ -45,6 +37,14 @@ fn main() -> Result<()> {
                 .help("Height (in lines) of the displayed sparkline")
                 .value_parser(clap::value_parser!(usize))
                 .default_value("1")
+        )
+        .arg(
+            Arg::new("FORMAT")
+                .short('F')
+                .long("format")
+                .help("Timestamp format to match")
+                .required(false)
+                .default_value("%d/%b/%Y:%H:%M:%S%.f"),
         )
         .arg(
             Arg::new("CONCURRENCY")
