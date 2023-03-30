@@ -14,6 +14,7 @@ fn main() -> Result<()> {
     let cmd = Command::new("krapslog")
         .version(VERSION)
         .about("Visualize log files using sparklines")
+        .disable_help_flag(true)
         .arg(
             Arg::new("FILE")
                 .help("Log file to analyze")
@@ -53,6 +54,12 @@ fn main() -> Result<()> {
                 .required(false)
                 .value_parser(clap::value_parser!(usize))
                 .default_value(num_cores_for_display),
+        )
+        .arg(
+            Arg::new("help")
+                .long("help")
+                .global(true)
+                .action(clap::ArgAction::Help)
         );
     let arg_matches = cmd.get_matches();
 
