@@ -17,7 +17,7 @@ fn main() -> Result<()> {
         .disable_help_flag(true)
         .arg(
             Arg::new("FILE")
-                .help("Log file to analyze")
+                .help("Log file to visualize")
                 .required(false)
                 .index(1),
         )
