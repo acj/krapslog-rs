@@ -1,6 +1,6 @@
 [package]
 name = "krapslog"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["Adam Jensen <adam@acj.sh>"]
 edition = "2021"
 license = "MIT"
