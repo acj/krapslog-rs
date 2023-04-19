@@ -24,7 +24,7 @@ path = "src/bin.rs"
 [dependencies]
 anyhow = "1.0"
 atty = "0.2"
-chrono = "0.4"
+chrono = { version = "0.4.24", default-features = false, features = ["clock"] }
 clap = "4.0"
 file-chunker = "0.1.1"
 memmap2 = "0.5.2"
