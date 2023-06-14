@@ -353,7 +353,7 @@ dependencies = [
 
 [[package]]
 name = "krapslog"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "anyhow",
  "atty",
