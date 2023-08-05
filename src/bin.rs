@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use clap::{Arg, Command};
 use rayon::prelude::*;
-use std::fs;
+use std::{fs, io::IsTerminal};
 use terminal_size::{terminal_size, Width};
 
 use file_chunker::FileChunker;
@@ -66,7 +66,7 @@ fn main() -> Result<()> {
     let timestamp_format: &String = arg_matches.get_one::<String>("FORMAT").unwrap();
     let timestamps = match arg_matches.get_one::<String>("FILE") {
         None => {
-            if atty::is(atty::Stream::Stdin) {
+            if std::io::stdin().is_terminal() {
                 eprintln!("Reading from standard input. Paste your log and then send EOF (e.g. by pressing ctrl-D).");
             }
 
