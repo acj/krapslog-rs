@@ -339,7 +339,7 @@ dependencies = [
  "chrono",
  "clap",
  "file-chunker",
- "memmap2 0.6.2",
+ "memmap2 0.7.1",
  "num_cpus",
  "rayon",
  "regex",
@@ -382,9 +382,9 @@ dependencies = [
 
 [[package]]
 name = "memmap2"
-version = "0.6.2"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d28bba84adfe6646737845bc5ebbfa2c08424eb1c37e94a1fd2a82adb56a872"
+checksum = "f49388d20533534cd19360ad3d6a7dadc885944aa802ba3995040c5ec11288c6"
 dependencies = [
  "libc",
 ]
