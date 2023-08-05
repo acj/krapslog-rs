@@ -70,7 +70,7 @@ fn main() -> Result<()> {
                 eprintln!("Reading from standard input. Paste your log and then send EOF (e.g. by pressing ctrl-D).");
             }
 
-            krapslog::scan_for_timestamps(std::io::stdin(), &timestamp_format)
+            krapslog::scan_for_timestamps(std::io::stdin(), timestamp_format)
         }
         Some(filename) => {
             let file = fs::File::open(filename)?;
@@ -83,7 +83,7 @@ fn main() -> Result<()> {
             Ok(chunker
                 .chunks(count, Some('\n'))?
                 .into_par_iter()
-                .map(|chunk| krapslog::scan_for_timestamps(chunk, &timestamp_format))
+                .map(|chunk| krapslog::scan_for_timestamps(chunk, timestamp_format))
                 .filter_map(Result::ok)
                 .collect::<Vec<Vec<i64>>>()
                 .concat())
