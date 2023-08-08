@@ -84,7 +84,7 @@ jobs:
   release:
     name: Create draft release
     runs-on: ubuntu-22.04
-    if: "startsWith(github.ref, 'refs/tags/')"
+    if: startsWith(github.ref, 'refs/tags/')
     needs: [build]
     steps:
       - uses: actions/download-artifact@v3
