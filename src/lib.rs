@@ -54,7 +54,7 @@ where
     let date_finder = TimestampFinder::new(format)?;
     let timestamps = BufReader::new(reader)
         .lines()
-        .filter_map(Result::ok)
+        .map_while(Result::ok)
         .filter_map(|line| date_finder.find_timestamp(&line))
         .collect();
     Ok(timestamps)
@@ -99,10 +99,9 @@ pub fn build_time_markers(
             vertical_offset: index + 1,
         })
         .for_each(|time_marker| {
-            match time_marker.render(&mut header_canvas) {
-                Err(e) => eprintln!("couldn't render time marker: {}", e),
-                _ => {}
-            };
+            if let Err(e) = time_marker.render(&mut header_canvas) {
+                eprintln!("couldn't render time marker: {}", e);
+            }
         });
 
     footer_timestamp_offsets
@@ -115,10 +114,9 @@ pub fn build_time_markers(
             vertical_offset: footer_timestamp_offsets.len() - index,
         })
         .for_each(|time_marker| {
-            match time_marker.render(&mut footer_canvas) {
-                Err(e) => eprintln!("couldn't render time marker: {}", e),
-                _ => {}
-            };
+            if let Err(e) = time_marker.render(&mut footer_canvas) {
+                eprintln!("couldn't render time marker: {}", e);
+            }
         });
 
     (format!("{}", header_canvas), format!("{}", footer_canvas))
