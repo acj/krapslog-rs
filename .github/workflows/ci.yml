@@ -45,10 +45,7 @@ jobs:
 
     steps:
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          default: true
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@984d158d699777abbaa79de23de3134e60c187fa # stable branch
       - name: Cargo Cache
         uses: actions/cache@v3
         with:
