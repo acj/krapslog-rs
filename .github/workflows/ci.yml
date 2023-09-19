@@ -20,7 +20,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Install Rust
-      uses: dtolnay/rust-toolchain@984d158d699777abbaa79de23de3134e60c187fa # stable branch
+      uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable branch
     - name: Run cargo fmt
       run: cargo fmt --all -- --check
 
@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@984d158d699777abbaa79de23de3134e60c187fa # stable branch
+        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable branch
       - name: Cargo Cache
         uses: actions/cache@v3
         with:
