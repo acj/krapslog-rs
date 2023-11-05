@@ -109,9 +109,9 @@ jobs:
             fi
           done
 
-      - uses: "marvinpinto/action-automatic-releases@v1.1.1"
+      - uses: softprops/action-gh-release@c9b46fe7aad9f02afd89b12450b780f52dacfb2d # ~0.1.15, as of 2023/11/5
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
           draft: true
           prerelease: false
           files: |
