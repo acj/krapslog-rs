@@ -21,7 +21,7 @@ impl TimestampFinder {
         let regex_match = self.regex.captures(s)?.get(0)?;
         let datetime =
             NaiveDateTime::parse_from_str(regex_match.as_str(), &self.datetime_format).ok()?;
-        Some(datetime.timestamp())
+        Some(datetime.and_utc().timestamp())
     }
 
     fn strftime_to_regex(time_format: &str) -> String {

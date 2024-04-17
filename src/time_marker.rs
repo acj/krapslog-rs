@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use chrono::NaiveDateTime;
+use chrono::DateTime;
 use std::fmt;
 
 pub enum TimestampLocation {
@@ -44,9 +44,10 @@ pub struct TimeMarker {
 
 impl TimeMarker {
     pub fn render(&self, canvas: &mut Canvas) -> Result<()> {
-        let time = NaiveDateTime::from_timestamp_opt(self.timestamp, 0)
+        let time = DateTime::from_timestamp(self.timestamp, 0)
             .ok_or(anyhow!("timestamp is invalid: {}", self.timestamp))?
-            .to_string();
+            .to_string()
+            .replace(" UTC", "");
 
         let (stem_rows, timestamp_row, timestamp_horizontal_offset) = match &self.timestamp_location
         {
