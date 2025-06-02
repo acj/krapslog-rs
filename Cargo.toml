@@ -22,13 +22,13 @@ name = "krapslog"
 path = "src/bin.rs"
 
 [dependencies]
-anyhow = "1.0"
-chrono = { version = "0.4.24", default-features = false, features = ["clock"] }
-clap = "4.0"
+anyhow = "1.0.98"
+chrono = { version = "0.4.41", default-features = false, features = ["clock"] }
+clap = "4.5.36"
 file-chunker = "0.1.1"
-memmap2 = "0.9.0"
-num_cpus = "1.13"
+memmap2 = "0.9.5"
+num_cpus = "1.17.0"
 rayon = "1.5"
-regex = "1.9.5"
-tempfile = "3.3"
-terminal_size = "0.3.0"
+regex = "1.11.1"
+tempfile = "3.20.0"
+terminal_size = "0.4.2"
